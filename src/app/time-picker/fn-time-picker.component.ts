@@ -71,7 +71,7 @@ export class FnTimePickerComponent implements OnInit {
       }
 
       // this function call on backspce
-      if (event.keyCode == this.KEY_CODES.ENTER) {
+      if (event.keyCode == this.KEY_CODES.BACKSPACE) {
         this.activeItem = 0;
         setTimeout(() => document.getElementById('.fn-time-picker-ul').scrollTop = 0)
       }
