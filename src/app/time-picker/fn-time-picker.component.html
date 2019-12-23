@@ -1,0 +1,11 @@
+ <div class="fn-time-picker-search">
+   <input [(ngModel)]="searchTerm" (click)="clickEvent($event)" (keydown)="keydownEvent($event)" maxlength="17"
+     (keyup)="filterValue($event)" />
+
+   <div (click)="closeDropDown()">
+     <ul *ngIf="(uiItemArray && uiItemArray.length > 0) && showDropDown" class="fn-time-picker-ul">
+       <li *ngFor="let item of uiItemArray; let i = index" tabindex="{{i}}" [ngClass]="{'active': activeItem === i  }"
+         (click)="onItemClick(item)">{{item}}</li>
+     </ul>
+   </div>
+ </div>
