@@ -1,0 +1,10 @@
+<div>
+  <input #inputValue [(ngModel)]="searchInputVal" [value]="showInputVal" (click)="openDropDown()"
+    (keydown)="keyDownChange($event)" maxlength="17" (keyup)="filterValue($event)" />
+  <div (click)="closeDropDown()">
+    <ul *ngIf="uiItemArray.length > 0 && showDropDown" class="fn-time-picker-ul">
+      <li *ngFor="let item of uiItemArray; let i = index" tabindex="{{i}}" [ngClass]="{'active': activeIndex === i  }"
+        (click)="selectedValueFunction(item)">{{item}}</li>
+    </ul>
+  </div>
+</div>

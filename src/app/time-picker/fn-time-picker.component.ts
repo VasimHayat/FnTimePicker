@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
-import { Hour12Format, Hour24Format } from '../custom-time-modal';
+import { FnTimepickerService } from './../services/timepicker.service';
 
 @Component({
   selector: 'fn-time-picker',
@@ -13,28 +13,21 @@ export class FnTimePickerComponent implements OnInit {
   @Input() placeHolder: string;
   @Input() isMilitryTime: boolean;
 
-  timePickerUl: ElementRef;
-
-  private KEY_CODES = {
-    BACKSPACE: 8,
-    ENTER: 13
-  }
-
   mainItemArray = [];
   uiItemArray = [];
   searchTerm = "1";
 
   showDropDown: boolean = true;
-  HmFormat = Hour24Format;
-  HmaFormat = Hour12Format;
   public activeItem = -1;
+
+  constructor(private timePickerSvcs: FnTimepickerService) { }
 
   ngOnInit() {
 
     if (this.isMilitryTime) {
-      this.mainItemArray = this.HmFormat;
+      this.mainItemArray = this.timePickerSvcs.Hour24Format;
     } else {
-      this.mainItemArray = this.HmaFormat;
+      this.mainItemArray = this.timePickerSvcs.Hour12Format;
     }
 
     this.searchTerm = this.mainItemArray[this.index];
@@ -46,16 +39,14 @@ export class FnTimePickerComponent implements OnInit {
 
     this.showDropDown = true;
     if (typeof (this.searchTerm) !== "undefined") {
-      const regex12a = new RegExp("^([1-9]|1[012])(a)$");
-      const regex12p = new RegExp("^([1-9]|1[012])(p)$");
 
       // this code is written for matching From time
-      if (regex12a.test(this.searchTerm)) {
+      if (this.timePickerSvcs.regex12a.test(this.searchTerm)) {
 
         let timeStringSplit = this.searchTerm.split('a');
         this.uiItemArray = this.mainItemArray.filter(items => items.includes(timeStringSplit[0]) && items.includes('a'));
 
-      } else if (regex12p.test(this.searchTerm)) {
+      } else if (this.timePickerSvcs.regex12p.test(this.searchTerm)) {
         let timeStringSplit = this.searchTerm.split('p');
         this.uiItemArray = this.mainItemArray.filter(items => items.includes(timeStringSplit[0]) && items.includes('p'));
       } else {
@@ -71,13 +62,15 @@ export class FnTimePickerComponent implements OnInit {
       }
 
       // this function call on backspce
-      if (event.keyCode == this.KEY_CODES.BACKSPACE) {
+      if (event.keyCode == this.timePickerSvcs.KEY_CODES.BACKSPACE) {
         this.activeItem = 0;
-        setTimeout(() => document.getElementById('.fn-time-picker-ul').scrollTop = 0)
+        if (this.uiItemArray.length > 0) {
+          setTimeout(() => document.getElementById('containerDivSingle').scrollTop = 0)
+        }
       }
 
-      // this function call on enter after select value in fropdown list
-      if (event.keyCode == this.KEY_CODES.ENTER && this.uiItemArray.length > 0) {
+      // this function call on enter after select value in dropdown list
+      if (event.keyCode == this.timePickerSvcs.KEY_CODES.ENTER && this.uiItemArray.length > 0) {
         const liVal = document.querySelector("li.active").textContent;
         this.onItemClick(liVal);
         this.activeItem = 0;
